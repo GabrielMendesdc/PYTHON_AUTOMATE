@@ -24,7 +24,7 @@ https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoC
 
 
 <a target="_blank" href="https://steamcommunity.com/id/gbzinak/">
-  <img align="left" alt="Steam" width="22px" src="https://img.shields.io/badge/Steam-000000?style=for-the-badge&logo=steam&logoColor=white" />
+  <img align="left" alt="Steam" width="220px" src="https://img.shields.io/badge/Steam-000000?style=for-the-badge&logo=steam&logoColor=white" />
 </a>
 
 ![](https://img.shields.io/badge/Battle.net-148EFF?style=for-the-badge&logo=Battle.net&logoColor=white)
