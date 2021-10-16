@@ -31,16 +31,7 @@
 ![](https://img.shields.io/badge/Battle.net-148EFF?style=for-the-badge&logo=Battle.net&logoColor=white)
 
 
-
-
-
 ![Profile View Counter](https://komarev.com/ghpvc/?username=GabrielMendesdc)
 
 
-
 ![Your Repository's Stats](https://contrib.rocks/image?repo=GabrielMendesdc/phyton-automatization)
-
-
-
-![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https://github.com/GabrielMendesdc/phyton-automatization)
-
