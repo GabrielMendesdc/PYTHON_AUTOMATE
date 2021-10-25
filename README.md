@@ -8,6 +8,8 @@
 ![Your Repository's Stats](https://github-readme-stats.vercel.app/api/top-langs/?username=GabrielMendesdc&theme=blue)
 
 
+![https://spotify-github-profile.vercel.app/api/view.svg?uid=gbrdoidao&redirect=true](https://spotify-github-profile.vercel.app/api/view.svg?uid=gbrdoidao&cover_image=true&theme=default&bar_color=eb05a2&bar_color_cover=false)
+
 ![](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=darkgreen)
 ![](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)
 ![](https://img.shields.io/badge/Jupyter-F37626.svg?&style=for-the-badge&logo=Jupyter&logoColor=white)
