@@ -1,0 +1,45 @@
+import telebot
+from ipynb.fs.full.chamar import init
+import os
+
+
+
+
+bot = telebot.TeleBot(chaveapi)
+
+@bot.message_handler(commands=["notas"])
+def notas(mensagem):
+    k=0
+    print(mensagem.text)
+    if mensagem.text:
+        if init(mensagem.text[7:]) == 'erro':
+            text = 'não achei o fornecedor'
+            bot.reply_to(mensagem, text)
+            return '0'
+        pasta = r'C:\Users\pdv\projetos_jupyter\retorno'
+        for diretorio, subpastas, arquivos in os.walk(pasta):
+            for arquivo in arquivos:
+                j=str(k)+'.'
+                x = f'{pasta}\\nota{j}png'
+                print(f'nota{j}')
+                k+= 1
+                bot.send_photo(mensagem.chat.id, photo=open(x,'rb'))
+    text = 'pronto :)'
+    bot.reply_to(mensagem, text)
+
+
+def verifica(mensagem):
+    return True
+
+
+@bot.message_handler(func=verifica)
+def resposta(mensagem):
+    text = '''
+    menu do meu bot:
+    /notas pra ver notas!
+    vc pode clicar em /notas
+    '''
+    bot.reply_to(mensagem, text)
+
+    
+bot.polling()
