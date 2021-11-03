@@ -285,29 +285,18 @@ def preco(itens):
     return di
 
 
-def init(forn):
+def init(ean,mes=11):
     '''função de inicialização'''
+    print('init')
     purgedir('C:/Users/pdv/projetos_jupyter/retorno')
-    xmls,lista,lojas,aux,perg,achei,i=[],[],[],[],False,False,0
-    ean,x = 0,''
-    with open("cnpjs.txt", 'r') as db:
-        for linha in db:
-            if forn in linha.lower():
-                x = linha[-19:]
-                ean = x.translate(str.maketrans('', '', string.punctuation))
-                ean = ean[:9]
-                aux.append(linha)
-                achei = True
-        if not achei:
-            return 'erro'
-#         ean = aux[int(0)]
-#         ean = ean[-19:]
-#         ean = ean.translate(str.maketrans('', '', string.punctuation))
-#         ean = ean[:9]
-    cnpjs = ['05349537000185','07246178000166','08158815000105','32265622000138','05349537000266','23017342000209','23017342000110']
+    xmls,lista,lojas=[],[],[]
+    cnpjs = ['05349537000185','07246178000166','08158815000105','32265622000138',
+             '05349537000266','23017342000209','23017342000110']
     for cnpj in cnpjs:
-        dire = f'N:/XML ENTRADA/destinadas/{cnpj}/2021-10'
+        dire = f'N:/XML ENTRADA/destinadas/{cnpj}/2021-11'
         arq = [f for f in os.listdir(dire) if str(ean) in f]
+        if cnpj=='23017342000110' and arq == []:
+            return "não achei esse"
         for i in arq:
             xmls.append({f'{cnpj}':i})
             if cnpj == '05349537000185':
@@ -326,7 +315,7 @@ def init(forn):
                 lojas.append('Ouro Verde - LJ7')
     for k in xmls: 
         for c,v in k.items():
-            lista.append(f'N:/XML ENTRADA/destinadas/{c}/2021-10/{v}')
+            lista.append(f'N:/XML ENTRADA/destinadas/{c}/2021-11/{v}')
     ki=0
     k = 0
     for i in lista:
