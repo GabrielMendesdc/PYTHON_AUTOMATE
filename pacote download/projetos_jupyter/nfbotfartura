@@ -1,25 +1,37 @@
+import telebot
 from ipynb.fs.full.chamar import init
 import os
 import string
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import time
 
-chaveapi="2053709180:AAFJk9XRIoOOixLUqubVrZKPU-fzIPCGJS8"
+chaveapi="2053709180:AAEEwzIH51pF3O26htnf-DMZe9meLA-tPKo"
 bot = telebot.TeleBot(chaveapi)
-cnpjs = []
-mensagemID = ''
+cnpjs,ljs = [],[]
+mensagemID,forn = '',''
+
+lista_lojas = ['LJ1 - Guanabara','LJ2 - Primavera','LJ3 - Iguatemi','LJ4 - Flamboyant',
+                   'LJ5 - São Paulo','LJ6 - Valinhos','LJ7 - Ouro Verde', 'ESCOLHIDO']
 
 def makeKeyboard(lista):
     markup = InlineKeyboardMarkup()
-    for i in range(len(lista)):
-        markup.add(InlineKeyboardButton(str(lista[i]), callback_data=str(i)))
+    if len(lista) == 8:
+        for i in range(len(lista)):
+            markup.add(InlineKeyboardButton(str(lista[i]), callback_data=str(lista[i])))
+    else:
+        for i in range(len(lista)):
+            markup.add(InlineKeyboardButton(str(lista[i]), callback_data=str(i)))
     return markup
 
 
-def checkforn(mensagem,forn = 'adep'):
+def lojas():
+    global lista_lojas,mensagemID
+    print('lojas')
+    bot.send_message(mensagemID,"Escolha quais lojas: ", reply_markup = makeKeyboard(lista_lojas))
+    
+    
+def checkforn(forn = 'adep',ljs='0123456'):
     global cnpjs,mensagemID
-    mensagemID = mensagem.chat.id
-    print(mensagemID)
     perg,achei,aux,cnpj,cnpjs,k = False,False,[],'',[],0
     with open("cnpjs.txt", 'r') as db:
         for linha in db:
@@ -31,23 +43,28 @@ def checkforn(mensagem,forn = 'adep'):
                 k+=1
                 if achei:
                     perg = True
-                    print(perg)
                 achei = True
         if not achei:
             bot.reply_to(mensagemID, 'não achei esse fornecedor')
             return 0
         if perg:
-            print('perg')
+            if len(aux) == 8:
+                aux.append('fornecedor fantasma pra nao atrapalhar o sistema')
             bot.send_message(mensagemID,"Escolha seu fornecedor: ", reply_markup = makeKeyboard(aux))
             return 1
         if achei and perg == False:
-            init(int(cnpj))
-            envia()
+            init(int(cnpj),loja=ljs,idz=mensagemID)
+            envia(mensagemID)
 
 
 @bot.message_handler(commands=["notas"])
 def notas(mensagem):
-    checkforn(mensagem,forn = mensagem.text[7:])
+    global forn,mensagemID,ljs
+    ljs=[]
+    mensagemID = mensagem.chat.id
+    forn = mensagem.text[7:]
+    print(forn)
+    lojas()
 
 
 @bot.message_handler(func=lambda message: True)
@@ -62,12 +79,41 @@ def resposta(mensagem):
     
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
-    global cnpjs,mensagemID
-    print(cnpjs)
-    print('entrei no handle: ',call.data,cnpjs[int(call.data)] )
+    global lista_lojas,ljs,forn
+    if call.data.isdigit():
+        iniciar(call.data)
+    else:
+        if call.data == 'ESCOLHIDO' and ljs:
+            checkforn(forn,ljs)
+        if str(lista_lojas.index(call.data)) not in ljs and call.data != 'ESCOLHIDO':
+            ljs.append(str(lista_lojas.index(call.data)))
+        
+        
+def envia(mensagemID):
+    print('envia')
+    k=0
+    pasta = fr'C:\Users\pdv\projetos_jupyter\retorno\\{mensagemID}'
+    for diretorio, subpastas, arquivos in os.walk(pasta):
+        if not arquivos:
+            text = 'Desculpe, não achei notas desse fornecedor nessa loja'
+            bot.send_message(mensagemID,text)
+            return 0
+        for arquivo in arquivos:
+            print(arquivo)
+            j=str(k)+'.'
+            x = f'{pasta}\\nota{j}png'
+            k+= 1
+            bot.send_photo(mensagemID, photo=open(x,'rb'))
+    text = 'pronto :)'
+    bot.send_message(mensagemID,text)
+        
+    
+def iniciar(calldata):
+    global cnpjs,mensagemID,ljs
     try:
-        r = init(cnpjs[int(call.data)])
-        envia()
+        print(ljs)
+        r = init(cnpjs[int(calldata)],loja=ljs,idz=mensagemID)
+        envia(mensagemID)
     except Exception as e:
         print(e)
         bot.reply_to(mensagemID, 'não achei notas')
@@ -75,22 +121,6 @@ def handle_query(call):
         bot.reply_to(mensagemID, r)
         
         
-def envia():
-    print('envia')
-    global mensagemID
-    k=0
-    pasta = fr'C:\Users\pdv\projetos_jupyter\retorno'
-    for diretorio, subpastas, arquivos in os.walk(pasta):
-        for arquivo in arquivos:
-            j=str(k)+'.'
-            x = f'{pasta}\\nota{j}png'
-            print(f'nota{j}')
-            k+= 1
-            bot.send_photo(mensagemID, photo=open(x,'rb'))
-    text = 'pronto :)'
-    bot.send_message(mensagemID,text)
-        
-    
 while True:
     try:
         bot.polling(none_stop=True, interval=0, timeout=0)
