@@ -10,8 +10,6 @@ from time import sleep
 import matplotlib.pyplot as plt
 import dataframe_image as dfi
 
-# def __init__(forne):
-#     init(forne)
   
 forn = ''
         
@@ -285,18 +283,20 @@ def preco(itens):
     return di
 
 
-def init(ean,mes=11):
+def init(ean,mes=11,loja=['0','1','2','3','4','5','6'],idz='0'):
     '''função de inicialização'''
-    print('init')
-    purgedir('C:/Users/pdv/projetos_jupyter/retorno')
-    xmls,lista,lojas=[],[],[]
+    try:
+        os.mkdir(f'C:/Users/pdv/projetos_jupyter/retorno/{idz}')
+    except:
+        pass
+    purgedir(f'C:/Users/pdv/projetos_jupyter/retorno/{idz}')
+    xmls,lista,lojas,lojitas=[],[],[],[]
     cnpjs = ['05349537000185','07246178000166','08158815000105','32265622000138',
              '05349537000266','23017342000209','23017342000110']
-    for cnpj in cnpjs:
+    lojitas = [cnpjs[int(i)] for i in loja]
+    for cnpj in lojitas:
         dire = f'N:/XML ENTRADA/destinadas/{cnpj}/2021-11'
         arq = [f for f in os.listdir(dire) if str(ean) in f]
-        if cnpj=='23017342000110' and arq == []:
-            return "não achei esse"
         for i in arq:
             xmls.append({f'{cnpj}':i})
             if cnpj == '05349537000185':
@@ -328,9 +328,9 @@ def init(ean,mes=11):
             di = preco(names(rooti))
             df = pd.DataFrame(di, columns=['DESCRICAO DO ITEM', 'PRECO'])
             pf = pd.DataFrame(columns = lis)
-            dfi.export(pf, f'retorno/nota{ki}.png')
+            dfi.export(pf, f'retorno/{idz}/nota{ki}.png')
             ki += 1
-            dfi.export(df, f'retorno/nota{ki}.png')
+            dfi.export(df, f'retorno/{idz}/nota{ki}.png')
             ki += 1
             k += 1
         except Exception as e: print(e)
