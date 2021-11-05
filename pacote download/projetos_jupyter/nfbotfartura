@@ -5,7 +5,6 @@ import string
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import time
 
-chaveapi="2053709180:AAEEwzIH51pF3O26htnf-DMZe9meLA-tPKo"
 bot = telebot.TeleBot(chaveapi)
 cnpjs,ljs = [],[]
 mensagemID,forn = '',''
@@ -26,7 +25,6 @@ def makeKeyboard(lista):
 
 def lojas():
     global lista_lojas,mensagemID
-    print('lojas')
     bot.send_message(mensagemID,"Escolha quais lojas: ", reply_markup = makeKeyboard(lista_lojas))
     
     
@@ -45,7 +43,7 @@ def checkforn(forn = 'adep',ljs='0123456'):
                     perg = True
                 achei = True
         if not achei:
-            bot.reply_to(mensagemID, 'não achei esse fornecedor')
+            bot.send_message(mensagemID, 'não achei esse fornecedor')
             return 0
         if perg:
             if len(aux) == 8:
@@ -63,16 +61,38 @@ def notas(mensagem):
     ljs=[]
     mensagemID = mensagem.chat.id
     forn = mensagem.text[7:]
-    print(forn)
     lojas()
+    
+    
+@bot.message_handler(commands=["numero"])
+def numero(mensagem):
+    msg = mensagem.text[8:]
+    global forn,mensagemID,ljs
+    ljs=[]
+    mensagemID = mensagem.chat.id
+    print(msg)
+    for i in range(len(msg)):
+        if msg.startswith('0'):
+            msg = msg[1:]
+    print(msg)
+    if len(msg) >= 3 and msg.isdigit() == True:
+        init(numero=msg,idz=mensagemID)
+        envia(mensagemID)
+    else:
+        bot.send_message(mensagemID,"Não use letras ou menos de 3 números")
 
-
+    
 @bot.message_handler(func=lambda message: True)
 def resposta(mensagem):
     text = '''
-    Olá! digite:
-    "/notas fornecedor" pra ver notas!
-    desse fornecedor
+    Olá! Seja bem vindo ao NF Fartura Bot
+    :D  Estes são os meus Comandos:
+
+    "/notas fornecedor" pra ver notas do fornecedor
+    =-=-=-=-=-=-=-=-=-=  OU =-=-=-=-=-=-=-=-=-=
+    "/notas cnpj" (xx.xxx.xxx/xxxx-xx)
+    =-=-=-=-=-=-=-=-=-=  OU =-=-=-=-=-=-=-=-=-=
+    "/numero 123456" (número da sua nota)
     '''
     bot.reply_to(mensagem, text)
     
@@ -90,7 +110,6 @@ def handle_query(call):
         
         
 def envia(mensagemID):
-    print('envia')
     k=0
     pasta = fr'C:\Users\pdv\projetos_jupyter\retorno\\{mensagemID}'
     for diretorio, subpastas, arquivos in os.walk(pasta):
@@ -99,7 +118,6 @@ def envia(mensagemID):
             bot.send_message(mensagemID,text)
             return 0
         for arquivo in arquivos:
-            print(arquivo)
             j=str(k)+'.'
             x = f'{pasta}\\nota{j}png'
             k+= 1
@@ -111,7 +129,6 @@ def envia(mensagemID):
 def iniciar(calldata):
     global cnpjs,mensagemID,ljs
     try:
-        print(ljs)
         r = init(cnpjs[int(calldata)],loja=ljs,idz=mensagemID)
         envia(mensagemID)
     except Exception as e:
