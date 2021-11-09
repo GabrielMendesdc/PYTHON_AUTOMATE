@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[60]:
-
-
 
 def dv(ean):
     ean = str(ean)
@@ -42,16 +36,3 @@ while s != 's':
     if s.lower() == 'n':
         e = input('Digite seu EAN-13:  ')
         print(checa(e))
-
-
-# In[25]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
