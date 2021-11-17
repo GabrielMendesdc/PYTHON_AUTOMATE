@@ -1,0 +1,81 @@
+import pyautogui as pag
+import time
+import os
+import re
+import keyboard as kb
+from pathlib import Path
+
+
+pastanf = Path("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+pag.PAUSE = 1.5
+
+def wait(onde):
+    x = pag.locateCenterOnScreen(str(onde)+'.png')
+    while not x:
+        x = pag.locateCenterOnScreen(str(onde)+'.png')
+    return x
+
+
+def loga():
+    pag.click(1912,1064)
+    pag.click(626,289, clicks = 2)
+    wait("compras")
+    pag.write("gabriel")
+    pag.press("enter")
+    pag.write("password")
+    pag.press("enter")
+    wait("conf")
+    pag.click(235,33)  #conferencias
+    pag.click(260,144)  #xml/nfe
+    pag.click(960,264)  #ativa XML
+    pag.click(539,319)  #NF-e
+    pag.click(474,223)  #livro
+    time.sleep(3)
+    
+    
+def notas(pastanf):  
+    for diretorio, subpastas, arquivos in os.walk(pastanf):
+        for arquivo in arquivos:
+            yield arquivo
+            
+            
+def lança(nf):
+    pag.click(603,320)  #aba recepcao
+    pag.click(1063,458,clicks=2)  #nome
+    pag.write('bot G')
+    pag.click(669,318)  #clica compras
+    checa = checagem()
+    if checa == 'errocad':
+        movepasta('cadastro', nf)     
+        
+    
+def movepasta(destino, nf):
+    if destino == 'cadastro':
+        #os.replace(f"path{i}" , "path{i}")
+        pass
+
+def checagem():
+    time.sleep(3)   #confidence=0.2
+    errocad2 = pag.locateCenterOnScreen('nfe2.png',grayscale=True)
+    errocad1 = pag.locateCenterOnScreen('nfe1.png',grayscale=True)
+    seta = pag.locateCenterOnScreen('seta.png')
+    if seta:
+        print('seta')
+#         pag.click(1451,846, clicks=5)
+    if errocad1 or errocad2:
+        print('errocad',errocad1, errocad2)
+        pag.hotkey('ctrl','shift','capslock')  
+        return 'errocad'
+
+    
+# pag.hotkey('ctrl','shift','capslock')  
+#loga() 
+# for i in notas(pastanf):
+#     string = pastanf / '0101010101010101010101010101010101.xml'
+#     time.sleep(2)
+#     kb.write(str(string))
+#     time.sleep(2)
+#     pag.press("enter")
+#     time.sleep(2)
+#     lança(i)
+#     break
